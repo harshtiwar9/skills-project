@@ -16,7 +16,7 @@ class CreateJobsTable extends Migration
             $table->string('summary'); // Job title
             $table->string('body'); // Job description
             $table->string('posted_date')->useCurrent(); // Automatically set to the current date
-            $table->string('posted_by'); // ID of the poster
+            $table->unsignedBigInteger('posted_by'); // ID of the poster
             $table->timestamps(); // Created at and updated at timestamps
 
             // Setting up foreign key constraints which reference the users table
