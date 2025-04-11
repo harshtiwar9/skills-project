@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role', // 'poster' or 'viewer'
     ];
 
     /**
@@ -45,4 +46,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Jobs posted by the user (if user is a poster)
+    public function jobs()
+    {
+        return $this->hasMany(Job::class, 'posted_by');
+    }
+
+    // Jobs the user is interested in (if user is a viewer)
+    public function interestedJobs()
+    {
+        return $this->belongsToMany(Job::class, 'job_user');
+    }
+
 }
