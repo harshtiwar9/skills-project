@@ -13,7 +13,12 @@ class JobController extends Controller
     // Show all active jobs
     public function index()
     {
-        $jobs = Job::where('posted_date', '>='. Carbon::now()->subMonths(2))
+
+        // Calculate the date 2 months ago
+        $threshold = Carbon::now()->subMonths(2);
+
+        // Get all jobs posted in the last 2 months if no jobs are posted
+        $jobs = Job::where('posted_date', '>=', $threshold)
             ->orderBy('posted_date', 'desc')
             ->paginate(10);
         return view('jobs.index', compact('jobs'));

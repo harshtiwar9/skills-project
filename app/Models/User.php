@@ -56,7 +56,7 @@ class User extends Authenticatable
     // Jobs the user is interested in (if user is a viewer)
     public function interestedJobs()
     {
-        return $this->belongsToMany(Job::class, 'job_user');
+        return $this->belongsToMany(Job::class, 'job_user', 'user_id', 'job_id');
     }
 
 }
