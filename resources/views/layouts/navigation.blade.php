@@ -10,6 +10,14 @@
                     </a>
                 @endif
 
+                {{-- Show Inactive Jobs button for posters (hide on /jobs/inactive) --}}
+                @if (auth()->check() && auth()->user()->role === 'poster' && !request()->is('inactive'))
+                    <a href="{{ route('jobs.inactive') }}"
+                        class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                        Show Inactive Jobs
+                    </a>
+                @endif
+
                 {{-- Show Dashboard button only if not on job index or root --}}
                 @if (!request()->is('/') && !request()->is('jobs'))
                     <a href="{{ route('dashboard') }}" class="text-gray-900 dark:text-white">Dashboard</a>

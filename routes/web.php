@@ -37,4 +37,10 @@ Route::post('/jobs/{job}/revert-interest', [JobController::class, 'revertInteres
     ->middleware(['auth'])
     ->name('jobs.revertInterest');
 
+// Inactive jobs
+Route::middleware(['auth'])->group(function () {
+    Route::get('/inactive', [JobController::class, 'inactiveJobs'])->name('jobs.inactive');
+});
+
+
 require __DIR__ . '/auth.php';

@@ -23,7 +23,14 @@
         }, 3000);
     </script>
 
-    <h1 class="text-2xl font-bold mb-4">Available Jobs</h1>
+    <!-- Show title based on user role -->
+    <h1 class="text-2xl font-bold mb-4">
+        @if(auth()->check() && auth()->user()->role === 'poster')
+            Active Jobs
+        @else
+            Available Jobs
+        @endif
+    </h1>
 
     @if($jobs->count() > 0)
         <p class="mb-4">Total Jobs: <strong>{{ $jobs->total() }}</strong></p> <!-- Job count -->
@@ -63,11 +70,7 @@
                                         Yes
                                     </span>
                                 @else
-                                    {{-- Button to express interest --}}
-                                    <form action="{{ route('jobs.interest', $job->id) }}" method="POST">
-                                        @csrf
-
-                                    </form>
+                                    <span class="text-gray-500 text-sm">No interest yet</span>
                                 @endif
                             @endif
                         </td>

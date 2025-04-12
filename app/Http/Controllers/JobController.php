@@ -60,7 +60,7 @@ class JobController extends Controller
     // Show form to edit a job
     public function edit(Job $job)
     {
-        if($job->posted_by != Auth::id()) {
+        if ($job->posted_by != Auth::id()) {
             return redirect()->route('jobs.index')->with('error', 'You are not authorized to edit this job.');
         }
         return view('jobs.edit', compact('job'));
@@ -125,5 +125,20 @@ class JobController extends Controller
         // Redirect back to the job index page with a warning message
         return redirect()->route('jobs.index')->with('warning', 'Your interest in the job "' . $job->summary . '" has been reverted.');
     }
-}
 
+    // Show all inactive jobs
+    public function inactiveJobs()
+    {
+        // dd('Inactive Jobs Route Accessed');
+
+        // Calculate the date 2 months ago
+        $threshold = Carbon::now()->subMonths(2);
+
+        // Fetch jobs posted by the authenticated user and older than 2 months
+        $jobs = Job::where('posted_by', Auth::id())
+               ->where('posted_date', '<', $threshold)
+               ->paginate(10);
+
+        return view('jobs.inactive', compact('jobs'));
+    }
+}
