@@ -8,14 +8,25 @@
 
     <p class="text-sm mb-6">Posted on: {{ \Carbon\Carbon::parse($job->posted_date)->format('M d, Y') }}</p>
 
-    <!-- If user is a viewer, show 'Express Interest' button -->
+    <!-- If user is a viewer -->
     @if(auth()->check() && auth()->user()->role === 'viewer')
-        <form method="POST" action="{{ route('jobs.interest', $job->id) }}">
-            @csrf
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-                Express Interest
-            </button>
-        </form>
+        @if($job->interestedUsers->contains(auth()->id()))
+            <!-- Show 'Revert Interest' button if interest is already expressed -->
+            <form method="POST" action="{{ route('jobs.revertInterest', $job->id) }}">
+                @csrf
+                <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded">
+                    Revert Interest
+                </button>
+            </form>
+        @else
+            <!-- Show 'Express Interest' button if no interest is expressed -->
+            <form method="POST" action="{{ route('jobs.interest', $job->id) }}">
+                @csrf
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+                    Express Interest
+                </button>
+            </form>
+        @endif
     @endif
 
     <!-- If user is the poster, show interested users -->
@@ -37,4 +48,3 @@
     </a>
 </div>
 @endsection
-<!-- This code is a Blade template for displaying a job posting in a Laravel application.

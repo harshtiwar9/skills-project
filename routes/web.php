@@ -32,4 +32,9 @@ Route::post('/jobs/{job}/interest', [JobController::class, 'expressInterest'])
     ->middleware(['auth', 'verified'])
     ->name('jobs.interest');
 
+// Revert interest in a job
+Route::post('/jobs/{job}/revert-interest', [JobController::class, 'revertInterest'])
+    ->middleware(['auth'])
+    ->name('jobs.revertInterest');
+
 require __DIR__ . '/auth.php';

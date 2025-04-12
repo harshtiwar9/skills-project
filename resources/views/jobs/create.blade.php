@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto p-4">
+<div class="container mx-auto p-4 text-gray-800 dark:text-gray-200">
     <h1 class="text-2xl font-bold mb-4">Post a New Job</h1>
 
     <form action="{{ route('jobs.store') }}" method="POST">
@@ -9,7 +9,7 @@
 
         <div class="mb-4">
             <label class="block font-medium">Job Title</label>
-            <input type="text" name="summary" class="w-full border p-2 rounded" value="{{ old('summary') }}">
+            <input type="text" name="summary" class="w-full border p-2 rounded text-gray-800" value="{{ old('summary') }}">
             @error('summary')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror
@@ -17,7 +17,7 @@
 
         <div class="mb-4">
             <label class="block font-medium">Job Description</label>
-            <textarea name="body" class="w-full border p-2 rounded" rows="5">{{ old('body') }}</textarea>
+            <textarea name="body" class="w-full border p-2 rounded text-gray-800" rows="5">{{ old('body') }}</textarea>
             @error('body')
                 <p class="text-red-500 text-sm">{{ $message }}</p>
             @enderror

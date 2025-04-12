@@ -2,11 +2,28 @@
 
 @section('content')
 <div class="container mx-auto p-4 text-gray-800 dark:text-gray-200">
-    <h1 class="text-2xl font-bold mb-4">Available Jobs</h1>
-
+    <!-- Toast Notification -->
     @if(session('success'))
-        <div class="text-green-600 mb-4">{{ session('success') }}</div>
+        <div id="toast" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
+    @elseif(session('warning'))
+        <div id="toast" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+            {{ session('warning') }}
+        </div>
     @endif
+
+    <script>
+        // Automatically hide the toast after 3 seconds
+        setTimeout(() => {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.style.display = 'none';
+            }
+        }, 3000);
+    </script>
+
+    <h1 class="text-2xl font-bold mb-4">Available Jobs</h1>
 
     @if($jobs->count() > 0)
         <p class="mb-4">Total Jobs: <strong>{{ $jobs->total() }}</strong></p> <!-- Job count -->
@@ -18,6 +35,7 @@
                     <th class="border border-gray-300 px-4 py-2">Job Title</th>
                     <th class="border border-gray-300 px-4 py-2">Description</th>
                     <th class="border border-gray-300 px-4 py-2">Posted Date</th>
+                    <th class="border border-gray-300 px-4 py-2">Interest Expressed</th>
                     <th class="border border-gray-300 px-4 py-2">Actions</th>
                 </tr>
             </thead>
@@ -28,6 +46,31 @@
                         <td class="border border-gray-300 px-4 py-2">{{ $job->summary }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ Str::limit($job->body, 50) }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $job->posted_date->format('M d, Y') }}</td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            {{-- Poster Perspective: Show viewers who expressed interest --}}
+                            @if(auth()->check() && auth()->id() === $job->posted_by)
+                                @if($job->interestedUsers->count() > 0)
+                                    <span class="bg-green-100 text-green-800 text-sm font-semibold px-2.5 py-0.5 rounded">
+                                        {{ $job->interestedUsers->count() }} Interested
+                                    </span>
+                                @else
+                                    <span class="text-gray-500 text-sm">No interest yet</span>
+                                @endif
+                            @else
+                                {{-- Viewer Perspective: Show if the viewer has expressed interest --}}
+                                @if(auth()->check() && $job->interestedUsers->contains(auth()->id()))
+                                    <span class="bg-green-100 text-green-800 text-sm font-semibold px-2.5 py-0.5 rounded">
+                                        Yes
+                                    </span>
+                                @else
+                                    {{-- Button to express interest --}}
+                                    <form action="{{ route('jobs.interest', $job->id) }}" method="POST">
+                                        @csrf
+
+                                    </form>
+                                @endif
+                            @endif
+                        </td>
                         <td class="border border-gray-300 px-4 py-2">
                             {{-- View Details button (visible to everyone) --}}
                             <a href="{{ route('jobs.show', $job->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">View</a>

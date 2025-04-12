@@ -98,28 +98,31 @@ class JobController extends Controller
     }
 
     // Let a user express interest in a job
-    public function expressInterest($jobId)
+    public function expressInterest(Job $job)
     {
-        $job = Job::findOrFail($jobId);
         $user = Auth::user();
 
-        //check if the user is a viewer
-        if ($user->role !== 'viewer') {
-            return redirect()->route('jobs.index')->with('error', 'Only viewers can express interest in this job.');
+        // Attach the user to the job's interested users if not already attached
+        if (!$job->interestedUsers->contains($user->id)) {
+            $job->interestedUsers()->attach($user->id);
         }
 
-        // Check if the user is already interested in the job
-        if ($job->interestedUsers()->where('user_id', $user->id)->exists()) {
-            return redirect()->back()->with('error', 'You have already expressed interest in this job.');
-        }
-
-        // Attach the user to the job's interested users
-        $job->interestedUsers()->syncWithoutDetaching([$user->id]);
-
-        // Redirect to the jobs index with a success message
-        return redirect()->back()->with('success', 'You have expressed interest in this job!');
+        // Redirect back to the job index page with a success message
+        return redirect()->route('jobs.index')->with('success', 'You have successfully expressed interest in the job: ' . $job->summary);
     }
 
+    // Let a user revert interest in a job
+    public function revertInterest(Job $job)
+    {
+        $user = Auth::user();
 
+        // Detach the user from the job's interested users
+        if ($job->interestedUsers->contains($user->id)) {
+            $job->interestedUsers()->detach($user->id);
+        }
+
+        // Redirect back to the job index page with a warning message
+        return redirect()->route('jobs.index')->with('warning', 'Your interest in the job "' . $job->summary . '" has been reverted.');
+    }
 }
 
