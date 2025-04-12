@@ -33,9 +33,13 @@ class JobController extends Controller
     // Store a new job
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 'poster') {
+            return redirect()->route('jobs.index')->with('error', 'You are not authorized to create a job.');
+        }
+
         $request->validate([
-            'summary' => 'required|max:255',
-            'body' => 'required',
+            'summary' => 'required|string|max:255',
+            'body' => 'required|string',
         ]);
 
         Job::create([
@@ -44,8 +48,7 @@ class JobController extends Controller
             'posted_by' => Auth::id(),
         ]);
 
-        // Redirect to the jobs index with a success message
-        return redirect()->route('jobs.index')->with('success', 'Job posted successfully!');
+        return redirect()->route('jobs.index')->with('success', 'Job created successfully!');
     }
 
     // Show a specific job
@@ -66,13 +69,13 @@ class JobController extends Controller
     // Update a job
     public function update(Request $request, Job $job)
     {
-        if($job->posted_by != Auth::id()) {
+        if (Auth::id() !== $job->posted_by || Auth::user()->role !== 'poster') {
             return redirect()->route('jobs.index')->with('error', 'You are not authorized to edit this job.');
         }
 
         $request->validate([
-            'summary' => 'required|max:255',
-            'body' => 'required',
+            'summary' => 'required|string|max:255',
+            'body' => 'required|string',
         ]);
 
         $job->update([
@@ -80,20 +83,18 @@ class JobController extends Controller
             'body' => $request->body,
         ]);
 
-        // Redirect to the jobs index with a success message
         return redirect()->route('jobs.index')->with('success', 'Job updated successfully!');
     }
 
     // Delete a job
     public function destroy(Job $job)
     {
-        if($job->posted_by != Auth::id()) {
+        if (Auth::id() !== $job->posted_by || Auth::user()->role !== 'poster') {
             return redirect()->route('jobs.index')->with('error', 'You are not authorized to delete this job.');
         }
 
         $job->delete();
 
-        // Redirect to the jobs index with a success message
         return redirect()->route('jobs.index')->with('success', 'Job deleted successfully!');
     }
 

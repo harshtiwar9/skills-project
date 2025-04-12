@@ -6,7 +6,13 @@
 
     <p class="mb-4">{{ $job->body }}</p>
 
-    <p class="text-sm mb-6">Posted on: {{ \Carbon\Carbon::parse($job->posted_date)->format('M d, Y') }}</p>
+    <p class="text-sm mb-2">Posted on: {{ \Carbon\Carbon::parse($job->posted_date)->format('M d, Y') }}</p>
+
+    <!-- Show the job poster -->
+    <p class="text-sm mb-6">Posted by:
+        <strong>{{ $job->postedBy->name ?? 'Unknown' }}</strong>
+        ({{ $job->postedBy->email ?? 'No email available' }})
+    </p>
 
     <!-- If user is a viewer -->
     @if(auth()->check() && auth()->user()->role === 'viewer')
