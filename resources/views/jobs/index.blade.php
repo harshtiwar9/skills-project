@@ -11,6 +11,10 @@
         <div id="toast" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
             {{ session('warning') }}
         </div>
+    @elseif(session('error'))
+        <div id="toast" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
     @endif
 
     <script>
@@ -42,8 +46,13 @@
                     <th class="border border-gray-300 px-4 py-2">Job Title</th>
                     <th class="border border-gray-300 px-4 py-2">Description</th>
                     <th class="border border-gray-300 px-4 py-2">Posted Date</th>
-                    <th class="border border-gray-300 px-4 py-2">Interest Expressed</th>
-                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+                    @if(auth()->check() && auth()->user()->role === 'poster')
+                        <th class="border border-gray-300 px-4 py-2 text-center">Posted By</th>
+                        <th class="border border-gray-300 px-4 py-2 text-center">Interest Expressed</th>
+                    @else
+                        <th class="border border-gray-300 px-4 py-2 text-center">Your Interest</th>
+                    @endif
+                    <th class="border border-gray-300 px-4 py-2 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,9 +62,17 @@
                         <td class="border border-gray-300 px-4 py-2">{{ $job->summary }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ Str::limit($job->body, 50) }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $job->posted_date->format('M d, Y') }}</td>
-                        <td class="border border-gray-300 px-4 py-2">
-                            {{-- Poster Perspective: Show viewers who expressed interest --}}
-                            @if(auth()->check() && auth()->id() === $job->posted_by)
+                        @if(auth()->check() && auth()->user()->role === 'poster')
+                            <td class="border border-gray-300 px-4 py-2 text-center">
+                                {{-- Show "You" for the logged-in user's jobs, otherwise show the poster's name --}}
+                                @if(auth()->id() === $job->posted_by)
+                                    You
+                                @else
+                                    {{ $job->poster->name }}
+                                @endif
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2 text-center">
+                                {{-- Show interest count for all posters --}}
                                 @if($job->interestedUsers->count() > 0)
                                     <span class="bg-green-100 text-green-800 text-sm font-semibold px-2.5 py-0.5 rounded">
                                         {{ $job->interestedUsers->count() }} Interested
@@ -63,17 +80,17 @@
                                 @else
                                     <span class="text-gray-500 text-sm">No interest yet</span>
                                 @endif
-                            @else
+                            </td>
+                        @else
+                            <td class="border border-gray-300 px-4 py-2 text-center">
                                 {{-- Viewer Perspective: Show if the viewer has expressed interest --}}
                                 @if(auth()->check() && $job->interestedUsers->contains(auth()->id()))
                                     <span class="bg-green-100 text-green-800 text-sm font-semibold px-2.5 py-0.5 rounded">
                                         Yes
                                     </span>
-                                @else
-                                    <span class="text-gray-500 text-sm">No interest yet</span>
                                 @endif
-                            @endif
-                        </td>
+                            </td>
+                        @endif
                         <td class="border border-gray-300 px-4 py-2">
                             {{-- View Details button (visible to everyone) --}}
                             <a href="{{ route('jobs.show', $job->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">View</a>

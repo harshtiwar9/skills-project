@@ -10,8 +10,12 @@
 
     <!-- Show the job poster -->
     <p class="text-sm mb-6">Posted by:
-        <strong>{{ $job->postedBy->name ?? 'Unknown' }}</strong>
-        ({{ $job->postedBy->email ?? 'No email available' }})
+        @if(auth()->check() && auth()->id() === $job->posted_by)
+            <strong>You</strong> ({{ auth()->user()->name }} - {{ auth()->user()->email }})
+        @else
+            <strong>{{ $job->postedBy->name ?? 'Unknown' }}</strong>
+            ({{ $job->postedBy->email ?? 'No email available' }})
+        @endif
     </p>
 
     <!-- If user is a viewer -->

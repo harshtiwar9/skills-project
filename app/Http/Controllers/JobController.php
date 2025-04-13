@@ -11,16 +11,20 @@ use Illuminate\Support\Facades\Auth;
 class JobController extends Controller
 {
     // Show all active jobs
-    public function index()
+    public function index(Request $request)
     {
+        $threshold = now()->subMonths(2); // Jobs posted in the last 2 months
 
-        // Calculate the date 2 months ago
-        $threshold = Carbon::now()->subMonths(2);
-
-        // Get all jobs posted in the last 2 months if no jobs are posted
+        // Fetch jobs for posters, sorted by posted_date in descending order
         $jobs = Job::where('posted_date', '>=', $threshold)
-            ->orderBy('posted_date', 'desc')
-            ->paginate(10);
+                   ->orderBy('posted_date', 'desc')
+                   ->paginate(10);
+
+        // Redirect to page 1 if the requested page number is invalid
+        if ($request->has('page') && $request->page > $jobs->lastPage()) {
+            return redirect()->route('jobs.index', ['page' => 1]);
+        }
+
         return view('jobs.index', compact('jobs'));
     }
 
@@ -127,17 +131,21 @@ class JobController extends Controller
     }
 
     // Show all inactive jobs
-    public function inactiveJobs()
+    public function inactiveJobs(Request $request)
     {
-        // dd('Inactive Jobs Route Accessed');
 
-        // Calculate the date 2 months ago
-        $threshold = Carbon::now()->subMonths(2);
+        // Check if the user is a poster
+        if (Auth::user()->role !== 'poster') {
+            return redirect()->route('jobs.index')->with('error', 'You are not authorized to view inactive jobs.');
+        }
 
-        // Fetch jobs posted by the authenticated user and older than 2 months
-        $jobs = Job::where('posted_by', Auth::id())
-               ->where('posted_date', '<', $threshold)
-               ->paginate(10);
+        $threshold = now()->subMonths(2); // Jobs older than 2 months
+        $jobs = Job::where('posted_date', '<', $threshold)->paginate(10);
+
+        // Redirect to page 1 if the requested page number is invalid
+        if ($request->has('page') && $request->page > $jobs->lastPage()) {
+            return redirect()->route('jobs.inactive', ['page' => 1]);
+        }
 
         return view('jobs.inactive', compact('jobs'));
     }

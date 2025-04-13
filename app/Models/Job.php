@@ -24,4 +24,9 @@ class Job extends Model
     {
         return $this->belongsToMany(User::class, 'job_user', 'job_id', 'user_id');
     }
+
+    public function poster()
+    {
+        return $this->belongsTo(User::class, 'posted_by');
+    }
 }

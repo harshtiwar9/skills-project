@@ -5,26 +5,30 @@
     @if(auth()->check() && auth()->user()->role === 'poster')
         <h1 class="text-2xl font-bold mb-4">Post a New Job</h1>
 
-        <form action="{{ route('jobs.store') }}" method="POST">
+        <form method="POST" action="{{ route('jobs.store') }}">
             @csrf
 
-            <div class="mb-4">
-                <label class="block font-medium">Job Title</label>
-                <input type="text" name="summary" class="w-full border p-2 rounded text-gray-800" value="{{ old('summary') }}">
-                @error('summary')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+            <!-- Form fields for creating a new job -->
+            <div>
+                <x-input-label for="summary" :value="__('Job Title')" />
+                <x-text-input id="summary" class="block mt-1 w-full" type="text" name="summary" required />
             </div>
 
-            <div class="mb-4">
-                <label class="block font-medium">Job Description</label>
-                <textarea name="body" class="w-full border p-2 rounded text-gray-800" rows="5">{{ old('body') }}</textarea>
-                @error('body')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
+            <div class="mt-4">
+                <x-input-label for="body" :value="__('Job Description')" />
+                <textarea id="body" name="body" class="block mt-1 w-full" required></textarea>
             </div>
 
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Create Job</button>
+            <div class="mt-4 flex justify-end space-x-4">
+                <x-primary-button>
+                    {{ __('Post Job') }}
+                </x-primary-button>
+
+                <!-- Cancel Button -->
+                <a href="{{ route('jobs.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Cancel
+                </a>
+            </div>
         </form>
     @else
         <p class="text-red-500">You are not authorized to create a job.</p>

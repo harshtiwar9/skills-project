@@ -13,8 +13,9 @@
                     <th class="border border-gray-300 px-4 py-2">#</th>
                     <th class="border border-gray-300 px-4 py-2">Job Title</th>
                     <th class="border border-gray-300 px-4 py-2">Description</th>
-                    <th class="border border-gray-300 px-4 py-2">Posted Date</th>
-                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+                    <th class="border border-gray-300 px-4 py-2 text-center">Posted Date</th>
+                    <th class="border border-gray-300 px-4 py-2 text-center">Posted By</th>
+                    <th class="border border-gray-300 px-4 py-2 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,11 +24,17 @@
                         <td class="border border-gray-300 px-4 py-2">{{ $index + $jobs->firstItem() }}</td> <!-- Job index -->
                         <td class="border border-gray-300 px-4 py-2">{{ $job->summary }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ Str::limit($job->body, 50) }}</td>
-                        <td class="border border-gray-300 px-4 py-2">{{ $job->posted_date->format('M d, Y') }}</td>
-                        <td class="border border-gray-300 px-4 py-2">
-                            <a href="{{ route('jobs.show', $job->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                                View
-                            </a>
+                        <td class="border border-gray-300 px-4 py-2 text-center">{{ $job->posted_date->format('M d, Y') }}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            {{-- Show "You" for the logged-in poster's jobs, otherwise show the poster's name --}}
+                            @if(auth()->id() === $job->posted_by)
+                                You
+                            @else
+                                {{ $job->poster->name }}
+                            @endif
+                        </td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            <a href="{{ route('jobs.show', $job->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">View</a>
                         </td>
                     </tr>
                 @endforeach
