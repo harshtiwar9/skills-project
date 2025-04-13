@@ -133,10 +133,9 @@ class JobController extends Controller
     // Show all inactive jobs
     public function inactiveJobs(Request $request)
     {
-
-        // Check if the user is a poster
-        if (Auth::user()->role !== 'poster') {
-            return redirect()->route('jobs.index')->with('error', 'You are not authorized to view inactive jobs.');
+        // Check if the user is authenticated and is a poster
+        if (!Auth::check() || Auth::user()->role !== 'poster') {
+            return redirect()->route('jobs.index')->with('warning', 'You are not authorized to view inactive jobs.');
         }
 
         $threshold = now()->subMonths(2); // Jobs older than 2 months

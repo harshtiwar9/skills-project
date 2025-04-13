@@ -91,7 +91,8 @@
                                 @endif
                             </td>
                         @endif
-                        <td class="border border-gray-300 px-4 py-2">
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            {{-- Buttons for viewers --}}
                             {{-- View Details button (visible to everyone) --}}
                             <a href="{{ route('jobs.show', $job->id) }}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">View</a>
 
