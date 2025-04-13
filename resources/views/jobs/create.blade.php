@@ -11,16 +11,22 @@
             <!-- Form fields for creating a new job -->
             <div>
                 <x-input-label for="summary" :value="__('Job Title')" />
-                <x-text-input id="summary" class="block mt-1 w-full" type="text" name="summary" required />
+                <input id="summary"
+                    class="block mt-1 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    type="text"
+                    name="summary"
+                    required />
             </div>
 
             <div class="mt-4">
                 <x-input-label for="body" :value="__('Job Description')" />
-                <textarea id="body" name="body" class="block mt-1 w-full" required></textarea>
+                <textarea id="body" name="body"
+                    class="block mt-1 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    required></textarea>
             </div>
 
-            <div class="mt-4 flex justify-end space-x-4">
-                <x-primary-button>
+            <div class="mt-4 flex justify-start space-x-4">
+                <x-primary-button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
                     {{ __('Post Job') }}
                 </x-primary-button>
 

@@ -49,6 +49,65 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[byte5](https://byte5.de)**
 - **[OP.GG](https://op.gg)**
 
+## Route Overview
+
+Below is a summary of the routes implemented in this project:
+
+| Route                          | Method | Description                                                                 |
+|--------------------------------|--------|-----------------------------------------------------------------------------|
+| `/jobs`                        | GET    | Displays a list of all jobs.                                               |
+| `/jobs/create`                 | GET    | Displays the form to create a new job.                                     |
+| `/jobs`                        | POST   | Stores a new job in the database.                                          |
+| `/jobs/{job}`                  | GET    | Displays detailed information about a specific job.                        |
+| `/jobs/{job}/edit`             | GET    | Displays the form to edit an existing job.                                 |
+| `/jobs/{job}`                  | PUT    | Updates an existing job in the database.                                   |
+| `/jobs/{job}`                  | DELETE | Deletes a specific job from the database.                                  |
+| `/jobs/{job}/interest`         | POST   | Allows a viewer to express interest in a job.                              |
+| `/jobs/{job}/revert-interest`  | POST   | Allows a viewer to revert their interest in a job.                         |
+| `/inactive`                    | GET    | Displays a list of inactive jobs (only accessible by posters).             |
+| `/profile`                     | GET    | Displays the profile edit page for the logged-in user.                     |
+| `/profile`                     | PATCH  | Updates the profile information of the logged-in user.                     |
+| `/profile`                     | DELETE | Deletes the profile of the logged-in user.                                 |
+
+---
+
+### Explanation of Routes
+
+1. **Job Routes:**
+   - `/jobs`: Displays a list of all jobs.
+   - `/jobs/create`: Displays a form to create a new job.
+   - `/jobs/{job}`: Displays detailed information about a specific job.
+   - `/jobs/{job}/edit`: Displays a form to edit an existing job.
+   - `/jobs/{job}/interest`: Allows viewers to express interest in a job.
+   - `/jobs/{job}/revert-interest`: Allows viewers to revert their interest in a job.
+
+2. **Inactive Jobs:**
+   - `/inactive`: Displays jobs that are inactive (older than 2 months). Only accessible by posters.
+
+3. **Profile Routes:**
+   - `/profile`: Allows users to edit or delete their profile.
+
+---
+
+### How to Use the Routes
+
+- **For Posters:**
+  - Posters can create, edit, delete, and view jobs.
+  - Posters can view inactive jobs and see a list of users who have expressed interest in their jobs.
+
+- **For Viewers:**
+  - Viewers can view job details and express or revert interest in jobs.
+
+---
+
+## How to Start the Application
+
+To start both the front-end and back-end of this application together, use the following command:
+
+```bash
+npm start
+```
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
